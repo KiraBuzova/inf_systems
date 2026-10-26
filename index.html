@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Прототип · Створення заявки · Сервіс виклику побутових майстрів</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap&subset=cyrillic" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ====== SVG-спрайт: іконки категорій (контурні, як на референсі) та UI-іконки ====== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-plumbing" viewBox="0 0 48 48"><path d="M17 7h14M24 7v8"/><path class="a" d="M7 17h23a9 9 0 0 1 9 9v5h-8v-5a1 1 0 0 0-1-1H7z"/><path class="a" d="M35 36c-2.2 3.2-3.5 5-3.5 6.7a3.5 3.5 0 0 0 7 0C38.5 41 37.2 39.2 35 36z"/></symbol>
+    <symbol id="i-electric" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path class="a" d="M27 9L15 26h8l-2 13 12-17h-8z"/></symbol>
+    <symbol id="i-appliance" viewBox="0 0 48 48"><rect x="9" y="5" width="30" height="38" rx="3"/><path d="M9 14h30M22 9.5h10"/><circle cx="15" cy="9.5" r=".8"/><circle cx="24" cy="29" r="9"/><circle class="a" cx="24" cy="29" r="5"/></symbol>
+    <symbol id="i-handyman" viewBox="0 0 48 48"><rect class="a" x="6" y="13" width="26" height="12" rx="3"/><path d="M32 16h6v6h-6M38 19h6M12 18h6"/><path class="a" d="M12 25l-2 15a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2l1-15"/></symbol>
+    <symbol id="i-cleaning" viewBox="0 0 48 48"><path d="M30 5l-6 19"/><path class="a" d="M16 24h17l5 18H10z"/><path d="M18 33l-1 9M24 33v9M30 33l1 9"/></symbol>
+    <symbol id="i-finishing" viewBox="0 0 48 48"><rect class="a" x="7" y="6" width="28" height="11" rx="2.5"/><path d="M35 11.5h5v12H22v6"/><rect class="a" x="19" y="29.5" width="6" height="13" rx="2"/></symbol>
+    <symbol id="i-windows" viewBox="0 0 48 48"><rect x="9" y="5" width="30" height="38" rx="2.5"/><rect class="a" x="9" y="5" width="15" height="19" rx="2"/><path d="M24 5v38M9 24h30M29 29v5"/></symbol>
+    <symbol id="i-climate" viewBox="0 0 48 48"><rect class="a" x="5" y="9" width="38" height="17" rx="4"/><path d="M10 21h28M14 32c3 3 3 5 0 8M24 32c3 3 3 5 0 8M34 32c3 3 3 5 0 8"/></symbol>
+
+    <symbol id="u-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="u-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="u-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="u-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="u-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></symbol>
+    <symbol id="u-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="u-list" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
+    <symbol id="u-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="u-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="u-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="u-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+    <symbol id="u-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="u-pin" viewBox="0 0 24 24"><path d="M12 21c-5-5.5-7-9-7-12a7 7 0 0 1 14 0c0 3-2 6.5-7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+    <symbol id="u-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+    <symbol id="u-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><path d="M7.5 8v.01"/></symbol>
+    <symbol id="u-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+    <symbol id="u-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="u-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+    <symbol id="u-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="u-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></symbol>
+  </defs>
+</svg>
+
+<main class="stage">
+
+  <!-- Бокова панель для демонстрації (видна лише на широких екранах) -->
+  <aside class="panel" aria-label="Навігація по екранах прототипу">
+    <p class="panel__kicker">Практична робота 3 · Прототип</p>
+    <h1>Use-case 1.<br>Створення заявки</h1>
+    <p class="panel__lead">Сервіс виклику побутових майстрів. Клікайте по застосунку або переходьте до потрібного екрана.</p>
+
+    <h2>Екрани</h2>
+    <div class="jump">
+      <button data-jump="1"><b>1</b>Головна клієнта</button>
+      <button data-jump="2"><b>2</b>Крок 1/4 · Категорія</button>
+      <button data-jump="3"><b>3</b>Крок 2/4 · Ціни</button>
+      <button data-jump="4"><b>4</b>Крок 3/4 · Опис і фото</button>
+      <button data-jump="5"><b>5</b>Крок 4/4 · Адреса</button>
+      <button data-jump="map"><b>5</b>Карта: вибір місця</button>
+      <button data-jump="6"><b>6</b>Помилка форми (4а)</button>
+      <button data-jump="6c"><b>6</b>Поза зоною (4в)</button>
+      <button data-jump="7"><b>7</b>Відправлення</button>
+      <button data-jump="8"><b>8</b>Заявку створено</button>
+      <button data-jump="9"><b>9</b>Мої заявки</button>
+    </div>
+    <button class="panel__reset" data-jump="reset">Почати спочатку</button>
+  </aside>
+
+  <!-- ====== Телефон 390 × 844 ====== -->
+  <div class="phone" id="phone">
+    <div class="statusbar" aria-hidden="true">
+      <span class="statusbar__time">9:41</span>
+      <span class="statusbar__icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="22" height="11" rx="3.5"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.5" fill="currentColor" stroke="none"/><path d="M24.5 4v4" stroke-linecap="round"/></svg>
+      </span>
+    </div>
+
+    <!-- 1. Головна клієнта -->
+    <section class="screen active" id="s-home" aria-label="Головна">
+      <header class="appbar appbar--hero">
+        <div>
+          <p class="appbar__hint">Доброго дня,</p>
+          <h1 class="appbar__greet">Олексію!</h1>
+        </div>
+        <div class="appbar__right">
+          <span class="loc"><svg class="ui"><use href="#u-pin"/></svg>Київ</span>
+          <button class="icon-btn icon-btn--light" aria-label="Сповіщення"><svg class="ui"><use href="#u-bell"/></svg></button>
+        </div>
+      </header>
+      <div class="body body--home">
+        <section class="hero">
+          <svg class="hero__gear" viewBox="-50 -50 100 100" aria-hidden="true"><circle r="34" fill="none" stroke="#D2691E" stroke-width="13" stroke-dasharray="13.4 13.4"/><circle r="27" fill="none" stroke="#D2691E" stroke-width="10"/></svg>
+          <h2 class="hero__title">Майстер до вас —<br>сьогодні</h2>
+          <p class="hero__text">Опишіть проблему, побачте ціну наперед і самі оберіть перевіреного майстра.</p>
+          <button class="btn btn--primary" id="home-cta">Створити заявку</button>
+        </section>
+
+        <ul class="trust">
+          <li><span><svg class="ui"><use href="#u-shield"/></svg></span>Верифіковані майстри</li>
+          <li><span><svg class="ui"><use href="#u-tag"/></svg></span>Ціна наперед</li>
+          <li><span><svg class="ui"><use href="#u-star"/></svg></span>Гарантія на роботи</li>
+        </ul>
+
+        <div class="sec-head"><h3>Категорії</h3></div>
+        <div class="hscroll" id="home-cats"></div>
+
+        <div class="sec-head"><h3>Часті замовлення</h3><p>Ціни у Києві</p></div>
+        <div class="hscroll" id="home-popular"></div>
+
+        <button class="promo" id="promo" type="button">
+          <span class="promo__pct">−10%</span>
+          <span class="promo__txt"><b>Знижка на першу оплату</b><small>Торкніться, щоб скопіювати код</small></span>
+          <span class="promo__code">MASTER10</span>
+        </button>
+
+        <div class="sec-head"><h3>Як це працює</h3></div>
+        <ol class="how">
+          <li><b>Опишіть проблему</b><span>Категорія, фото та адреса — до 5 кроків.</span></li>
+          <li><b>Оберіть майстра</b><span>Майстри відгукнуться, а ви порівняєте рейтинг і час.</span></li>
+          <li><b>Оплатіть після роботи</b><span>Карткою в застосунку, не більше за діапазон.</span></li>
+        </ol>
+      </div>
+      <nav class="tabbar" data-tabbar></nav>
+    </section>
+
+    <!-- 2. Крок 1/4 — Категорія -->
+    <section class="screen" id="s-category" aria-label="Крок 1 з 4. Категорія">
+      <header class="appbar">
+        <button class="icon-btn icon-btn--light" data-back aria-label="Назад"><svg class="ui"><use href="#u-back"/></svg></button>
+        <h1 class="appbar__title">Нова заявка</h1>
+      </header>
+      <div class="steps" data-step="1"><p>Крок 1 з 4 · Категорія</p><div class="steps__bar"><i></i><i></i><i></i><i></i></div></div>
+      <div class="body body--tight">
+        <h2 class="h2">Оберіть потрібну категорію</h2>
+        <ul class="list" id="cat-list"></ul>
+      </div>
+    </section>
+
+    <!-- 3. Крок 2/4 — Ціни -->
+    <section class="screen" id="s-prices" aria-label="Крок 2 з 4. Ціни">
+      <header class="appbar">
+        <button class="icon-btn icon-btn--light" data-back aria-label="Назад"><svg class="ui"><use href="#u-back"/></svg></button>
+        <h1 class="appbar__title">Нова заявка</h1>
+      </header>
+      <div class="steps" data-step="2"><p>Крок 2 з 4 · Ціни</p><div class="steps__bar"><i></i><i></i><i></i><i></i></div></div>
+      <div class="body body--tight">
+        <div class="cat-head"><svg class="cat-ico"><use id="prices-ico" href="#i-plumbing"/></svg><div><h2 class="h2" id="prices-title">Сантехніка</h2><p class="muted">Оберіть вид роботи</p></div></div>
+        <ul class="list" id="work-list" role="radiogroup" aria-label="Вид роботи"></ul>
+        <div class="info"><svg class="ui"><use href="#u-info"/></svg><p>Остаточна ціна не вийде за межі діапазону, який ви бачите тут.</p></div>
+      </div>
+      <footer class="footer">
+        <p class="footer__sum" id="prices-sum">Оберіть вид роботи</p>
+        <button class="btn btn--primary btn--block" id="prices-next" disabled>Далі</button>
+      </footer>
+    </section>
+
+    <!-- 4. Крок 3/4 — Опис і фото -->
+    <section class="screen" id="s-desc" aria-label="Крок 3 з 4. Опис і фото">
+      <header class="appbar">
+        <button class="icon-btn icon-btn--light" data-back aria-label="Назад"><svg class="ui"><use href="#u-back"/></svg></button>
+        <h1 class="appbar__title">Нова заявка</h1>
+      </header>
+      <div class="steps" data-step="3"><p>Крок 3 з 4 · Опис і фото</p><div class="steps__bar"><i></i><i></i><i></i><i></i></div></div>
+      <div class="body body--tight" id="desc-body">
+        <h2 class="h2">Опишіть проблему</h2>
+        <div class="field" id="f-desc">
+          <label for="desc">Що сталося?</label>
+          <textarea id="desc" rows="4" maxlength="300" placeholder="Наприклад: тече змішувач на кухні, вода капає постійно"></textarea>
+          <div class="field__meta"><p class="err" id="desc-err" hidden>Опишіть проблему, щоб майстер зрозумів, з чим їхати</p><span class="count" id="desc-count">0/300</span></div>
+        </div>
+
+        <h3 class="h3">Фото несправності</h3>
+        <p class="muted mb">Фото необов’язкові — можна продовжити без них.</p>
+        <button class="btn btn--secondary btn--block" id="add-photo"><svg class="ui"><use href="#u-camera"/></svg>Додати фото</button>
+        <div class="thumbs" id="thumbs"></div>
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </div>
+      <footer class="footer"><button class="btn btn--primary btn--block" id="desc-next">Далі</button></footer>
+    </section>
+
+    <!-- 5. Крок 4/4 — Адреса (екран 6 — його стан помилки) -->
+    <section class="screen" id="s-address" aria-label="Крок 4 з 4. Адреса">
+      <header class="appbar">
+        <button class="icon-btn icon-btn--light" data-back aria-label="Назад"><svg class="ui"><use href="#u-back"/></svg></button>
+        <h1 class="appbar__title">Нова заявка</h1>
+      </header>
+      <div class="steps" data-step="4"><p>Крок 4 з 4 · Адреса</p><div class="steps__bar"><i></i><i></i><i></i><i></i></div></div>
+      <div class="body body--tight" id="addr-body">
+        <h2 class="h2">Куди приїхати?</h2>
+        <div class="field" id="f-street">
+          <label for="street">Вулиця і будинок</label>
+          <input id="street" type="text" autocomplete="off" placeholder="вул. Богатирська, 12">
+          <p class="err" id="street-err" hidden>Вкажіть адресу</p>
+        </div>
+        <div class="row2">
+          <div class="field" id="f-apt">
+            <label for="apt">Квартира</label>
+            <input id="apt" type="text" inputmode="numeric" autocomplete="off" placeholder="34">
+          </div>
+          <div class="field field--select" id="f-district">
+            <label id="district-label">Район</label>
+            <button type="button" class="select" id="district-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="district-label district-val"><span id="district-val">Оболонь</span><svg class="ui"><use href="#u-down"/></svg></button>
+            <ul class="options" id="district-list" role="listbox" hidden></ul>
+          </div>
+        </div>
+        <p class="err err--solo" id="district-err" hidden>Ця адреса поза зоною обслуговування</p>
+
+        <div class="minimap" id="minimap" role="button" tabindex="0" aria-label="Відкрити карту">
+          <div class="minimap__canvas" id="mini-canvas"></div>
+          <span class="minimap__open"><svg class="ui"><use href="#u-expand"/></svg>Відкрити карту</span>
+        </div>
+        <p class="zone-line" id="zone-line"></p>
+      </div>
+      <footer class="footer"><button class="btn btn--primary btn--block" id="create">Створити заявку</button></footer>
+    </section>
+
+    <!-- Карта: вибір місця -->
+    <section class="screen" id="s-map" aria-label="Карта">
+      <header class="appbar">
+        <button class="icon-btn icon-btn--light" data-back aria-label="Назад"><svg class="ui"><use href="#u-back"/></svg></button>
+        <h1 class="appbar__title">Місце виклику майстра</h1>
+      </header>
+      <div class="mapwrap">
+        <div class="fullmap" id="full-canvas"></div>
+        <div class="mapchips" id="map-chips"></div>
+        <div class="mapctl">
+          <button id="map-zin" aria-label="Збільшити"><svg class="ui"><use href="#u-plus"/></svg></button>
+          <button id="map-zout" aria-label="Зменшити"><svg class="ui"><use href="#u-minus"/></svg></button>
+          <button id="map-loc" aria-label="Моє місцезнаходження"><svg class="ui"><use href="#u-locate"/></svg></button>
+        </div>
+        <p class="maphint">Торкніться району, щоб поставити мітку. Перетягуйте карту пальцем.</p>
+      </div>
+      <footer class="footer mapcard">
+        <div class="mapcard__info"><b id="mc-name">Оберіть район</b><p id="mc-sub">Торкніться району на карті</p></div>
+        <button class="btn btn--primary btn--block" id="map-ok" disabled>Підтвердити місце</button>
+      </footer>
+    </section>
+
+    <!-- 7. Відправлення -->
+    <section class="screen screen--center" id="s-sending" aria-label="Відправлення">
+      <img src="assets/gear.gif" alt="" width="120" height="120" class="loader">
+      <p class="loader-text">Відправляємо заявку…</p>
+    </section>
+
+    <!-- 8. Заявку створено -->
+    <section class="screen screen--center" id="s-created" aria-label="Заявку створено">
+      <div class="done">
+        <div class="done__check"><svg class="ui ui--xl"><use href="#u-check"/></svg></div>
+        <h1 class="done__title">Заявка №<span id="done-id">1024</span> створена</h1>
+        <span class="badge badge--new">Нова</span>
+        <p class="done__text">Майстри у вашому районі отримали сповіщення.</p>
+        <div class="done__card" id="done-card"></div>
+      </div>
+      <div class="footer footer--plain"><button class="btn btn--primary btn--block" id="done-next">До моїх заявок</button></div>
+    </section>
+
+    <!-- 9. Мої заявки -->
+    <section class="screen" id="s-requests" aria-label="Мої заявки">
+      <header class="appbar"><h1 class="appbar__title appbar__title--solo">Мої заявки</h1></header>
+      <div class="tabs" role="tablist" id="req-tabs">
+        <button role="tab" aria-selected="true" data-tab="active">Активні</button>
+        <button role="tab" aria-selected="false" data-tab="done">Виконані</button>
+        <button role="tab" aria-selected="false" data-tab="paid">Оплачені</button>
+      </div>
+      <div class="body" id="req-body"></div>
+      <nav class="tabbar" data-tabbar></nav>
+    </section>
+
+    <!-- Профіль -->
+    <section class="screen" id="s-profile" aria-label="Профіль">
+      <header class="appbar"><h1 class="appbar__title appbar__title--solo">Профіль</h1></header>
+      <div class="body">
+        <div class="profile">
+          <div class="avatar">ОК</div>
+          <div><h2 class="h2">Олексій Коваленко</h2><p class="muted">+380 •• ••• •• 47</p></div>
+        </div>
+        <ul class="menu">
+          <li>Мої адреси</li><li>Сповіщення</li><li>Підтримка</li><li>Вийти</li>
+        </ul>
+      </div>
+      <nav class="tabbar" data-tabbar></nav>
+    </section>
+
+    <!-- ====== Оверлеї ====== -->
+    <div class="dim" id="dim"></div>
+
+    <div class="sheet" id="sheet" role="dialog" aria-label="Додати фото" aria-hidden="true">
+      <span class="sheet__grip"></span>
+      <button class="sheet__row" id="sheet-camera"><svg class="ui"><use href="#u-camera"/></svg>Камера</button>
+      <button class="sheet__row" id="sheet-gallery"><svg class="ui"><use href="#u-image"/></svg>Галерея</button>
+      <button class="btn btn--secondary btn--block" id="sheet-cancel">Скасувати</button>
+    </div>
+
+    <div class="modal" id="modal" role="alertdialog" aria-labelledby="modal-title" aria-hidden="true">
+      <h2 id="modal-title">Скасувати заявку?</h2>
+      <p>Заявку можна скасувати, доки вона не отримала статус «Підтверджена».</p>
+      <div class="modal__btns">
+        <button class="btn btn--danger" id="modal-yes">Так, скасувати</button>
+        <button class="btn btn--secondary" id="modal-no">Ні</button>
+      </div>
+    </div>
+
+    <div class="push" id="push" role="status" aria-live="polite" hidden>
+      <span class="push__ico"><svg class="ui"><use href="#u-bell"/></svg></span>
+      <div><b>Сервіс виклику майстрів</b><p>1 майстер прийняв вашу заявку</p></div>
+    </div>
+
+    <div class="snack" id="snack" role="status" aria-live="polite"></div>
+
+    <div class="kb" id="kb" aria-hidden="true"></div>
+  </div>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
